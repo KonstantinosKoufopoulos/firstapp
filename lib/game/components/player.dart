@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
