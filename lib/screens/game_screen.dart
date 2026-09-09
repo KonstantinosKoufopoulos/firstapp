@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../game/dodge_rush_game.dart';
 import '../theme/dodge_rush_theme.dart';
+import '../widgets/dodge_rush_brand.dart';
 import 'fail_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -55,28 +56,34 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         children: [
           GameWidget(game: _game),
           SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 9,
-                  ),
-                  decoration: BoxDecoration(
-                    color: DodgeRushColors.surface.withValues(alpha: 0.72),
-                    borderRadius: BorderRadius.circular(DodgeRushTokens.radius),
-                  ),
-                  child: Text(
-                    '$_displayScore',
-                    style: const TextStyle(
-                      color: DodgeRushColors.text,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Row(
+                children: [
+                  const DodgeRushIcon(size: 32),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 9,
+                    ),
+                    decoration: BoxDecoration(
+                      color: DodgeRushColors.surface.withValues(alpha: 0.72),
+                      borderRadius:
+                          BorderRadius.circular(DodgeRushTokens.radius),
+                    ),
+                    child: Text(
+                      '$_displayScore',
+                      style: const TextStyle(
+                        color: DodgeRushColors.text,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
-                ),
+                  const Spacer(),
+                  const SizedBox(width: 32), // balance icon
+                ],
               ),
             ),
           ),

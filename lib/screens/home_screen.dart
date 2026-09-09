@@ -27,6 +27,8 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
+                        const DodgeRushIcon(size: 32),
+                        const SizedBox(width: 10),
                         const DodgeRushWordmark(fontSize: 28),
                         const Spacer(),
                         _StatPill(
@@ -37,8 +39,6 @@ class HomeScreen extends ConsumerWidget {
                       ],
                     ),
                     const Spacer(),
-                    const Center(child: DodgeRushMark(size: 88)),
-                    const SizedBox(height: 20),
                     Center(
                       child: _StatPill(
                         icon: Icons.emoji_events_rounded,

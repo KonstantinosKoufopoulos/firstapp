@@ -15,12 +15,15 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
 
   final void Function(int score)? onGameOver;
 
+  static const hitStopMs = 60;
+
   late Player player;
   double _spawnTimer = 0;
   double _spawnInterval = 1.4;
   double _speed = 220;
   double _elapsed = 0;
   bool _alive = true;
+  bool _hitStopping = false;
   final _rng = Random();
 
   int get score => (_elapsed * 10).floor();
@@ -37,7 +40,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
 
   @override
   void onTapDown(TapDownEvent event) {
-    if (_alive) {
+    if (_alive && !_hitStopping) {
       player.jump();
     }
   }
@@ -45,7 +48,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   @override
   void update(double dt) {
     super.update(dt);
-    if (!_alive) return;
+    if (!_alive || _hitStopping) return;
 
     _elapsed += dt;
     _speed = 220 + _elapsed * 8;
@@ -63,10 +66,16 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   }
 
   void onPlayerHit() {
-    if (!_alive) return;
+    if (!_alive || _hitStopping) return;
     _alive = false;
+    _hitStopping = true;
     pauseEngine();
-    onGameOver?.call(score);
+    final finalScore = score;
+    // Hit-stop 60ms before fail flow.
+    Future<void>.delayed(const Duration(milliseconds: hitStopMs), () {
+      _hitStopping = false;
+      onGameOver?.call(finalScore);
+    });
   }
 
   void reset() {
@@ -78,9 +87,8 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     _spawnInterval = 1.4;
     _speed = 220;
     _alive = true;
-    player.position = Vector2(size.x * 0.25, size.y - 80);
-    player.velocityY = 0;
-    player.onGround = true;
+    _hitStopping = false;
+    player.resetState();
     resumeEngine();
   }
 }

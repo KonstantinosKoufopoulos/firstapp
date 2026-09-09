@@ -36,6 +36,7 @@ class DodgeRushWordmark extends StatelessWidget {
   }
 }
 
+/// Full mark for splash / onboarding (circle + slash).
 class DodgeRushMark extends StatelessWidget {
   const DodgeRushMark({super.key, this.size = 64});
 
@@ -45,12 +46,27 @@ class DodgeRushMark extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.square(
       dimension: size,
-      child: CustomPaint(painter: _DodgeRushMarkPainter()),
+      child: CustomPaint(painter: DodgeRushMarkPainter()),
     );
   }
 }
 
-class _DodgeRushMarkPainter extends CustomPainter {
+/// Compact slash-in-circle for in-game / menu (~32²).
+class DodgeRushIcon extends StatelessWidget {
+  const DodgeRushIcon({super.key, this.size = 32});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: size,
+      child: CustomPaint(painter: DodgeRushMarkPainter()),
+    );
+  }
+}
+
+class DodgeRushMarkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
