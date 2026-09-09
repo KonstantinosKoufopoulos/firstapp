@@ -13,8 +13,8 @@ class Player extends PositionComponent
   Player() : super(size: Vector2(40, 40), anchor: Anchor.bottomCenter);
 
   static const double gravity = 2200;
-  static const double jumpHeight = 120;
-  static const double jumpDuration = 0.14; // easeOutCubic rise ~140ms
+  static const double jumpHeight = 136;
+  static const double jumpDuration = 0.16; // easeOutCubic rise ~160ms
   static const double coyoteTime = 0.08; // 80ms
   static const double landSquashDuration = 0.10; // 100ms
   static const double landSquashScale = 0.85;
