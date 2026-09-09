@@ -34,7 +34,7 @@ class Player extends PositionComponent
   Future<void> onLoad() async {
     groundY = game.size.y - 80;
     position = Vector2(game.size.x * 0.25, groundY);
-    add(RectangleHitbox());
+    add(CircleHitbox(radius: 16));
   }
 
   void jump() {

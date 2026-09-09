@@ -22,7 +22,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   late Player player;
   double _spawnTimer = 0;
   double _spawnInterval = 1.2;
-  double _speed = 180;
+  double _speed = 160;
   double _elapsed = 0;
   bool _alive = true;
   bool _hitStopping = false;
@@ -53,7 +53,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   }
 
   double _tierSpeed() {
-    if (_elapsed < 15) return 180;
+    if (_elapsed < 15) return 160;
     if (_elapsed < 30) return 280;
     return 340;
   }
@@ -160,7 +160,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     _elapsed = 0;
     _spawnTimer = 0;
     _spawnInterval = 1.2;
-    _speed = 180;
+    _speed = 160;
     _patternIndex = 0;
     _nearMissCoins = 0;
     _nearMissFlash = 0;
