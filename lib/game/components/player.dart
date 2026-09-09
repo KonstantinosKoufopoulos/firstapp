@@ -13,8 +13,8 @@ class Player extends PositionComponent
   Player() : super(size: Vector2(40, 40), anchor: Anchor.bottomCenter);
 
   static const double gravity = 2200;
-  static const double jumpHeight = 130;
-  static const double jumpDuration = 0.22; // easeOutBack rise ~220ms
+  static const double jumpHeight = 120;
+  static const double jumpDuration = 0.14; // easeOutCubic rise ~140ms
   static const double coyoteTime = 0.08; // 80ms
   static const double landSquashDuration = 0.10; // 100ms
   static const double landSquashScale = 0.85;
@@ -75,14 +75,14 @@ class Player extends PositionComponent
     if (_rising) {
       _jumpT += dt;
       final t = (_jumpT / jumpDuration).clamp(0.0, 1.0);
-      final h = Curves.easeOutBack.transform(t);
+      final h = Curves.easeOutCubic.transform(t);
       position.y = groundY - jumpHeight * h;
       // Settle stretch toward neutral during rise.
       _scaleX = 0.88 + 0.12 * t;
       _scaleY = 1.18 - 0.18 * t;
       if (t >= 1.0) {
         _rising = false;
-        // Clamp after easeOutBack overshoot, then fall.
+        // End of rise, then fall.
         position.y = math.min(position.y, groundY - jumpHeight * 0.98);
         velocityY = 0;
       }
