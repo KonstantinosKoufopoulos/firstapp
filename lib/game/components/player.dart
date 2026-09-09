@@ -2,6 +2,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
+import '../../theme/dodge_rush_theme.dart';
 import '../dodge_rush_game.dart';
 import 'obstacle.dart';
 
@@ -46,14 +47,17 @@ class Player extends PositionComponent
 
   @override
   void render(Canvas canvas) {
-    final paint = Paint()..color = const Color(0xFF4FC3F7);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(size.toRect(), const Radius.circular(6)),
-      paint,
+    final paint = Paint()..color = DodgeRushColors.accent;
+    canvas.drawCircle(Offset(size.x / 2, size.y / 2), size.x / 2, paint);
+    final slash = Paint()
+      ..color = DodgeRushColors.background
+      ..strokeWidth = 4
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(
+      Offset(size.x * 0.38, size.y * 0.67),
+      Offset(size.x * 0.63, size.y * 0.31),
+      slash,
     );
-    // eyes
-    final eye = Paint()..color = Colors.white;
-    canvas.drawCircle(Offset(size.x * 0.7, size.y * 0.35), 4, eye);
   }
 
   @override

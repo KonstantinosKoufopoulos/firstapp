@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/providers.dart';
+import '../theme/dodge_rush_theme.dart';
+import '../widgets/dodge_rush_brand.dart';
 import 'home_screen.dart';
 
 class OnboardingScreen extends ConsumerWidget {
@@ -10,45 +12,46 @@ class OnboardingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D47A1),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: DodgeRushTokens.pagePadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
-              const Icon(Icons.sports_esports, size: 80, color: Colors.white),
-              const SizedBox(height: 16),
-              const Text(
-                'DodgeRush',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 24),
+              const Center(child: DodgeRushMark(size: 84)),
+              const SizedBox(height: 20),
+              const Center(child: DodgeRushWordmark(fontSize: 38)),
+              const SizedBox(height: 28),
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: DodgeRushTokens.pagePadding,
                 decoration: BoxDecoration(
-                  color: Colors.white12,
-                  borderRadius: BorderRadius.circular(16),
+                  color: DodgeRushColors.surface,
+                  borderRadius: BorderRadius.circular(DodgeRushTokens.radius),
                 ),
                 child: const Column(
                   children: [
-                    Icon(Icons.touch_app, color: Colors.lightBlueAccent, size: 48),
+                    Icon(
+                      Icons.touch_app_rounded,
+                      color: DodgeRushColors.accent,
+                      size: 46,
+                    ),
                     SizedBox(height: 12),
                     Text(
                       'Tap to jump / dodge',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     SizedBox(height: 8),
                     Text(
                       'Obstacles come from the right.\nSurvive as long as you can.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(
+                        color: DodgeRushColors.muted,
+                        height: 1.4,
+                      ),
                     ),
                   ],
                 ),
@@ -56,18 +59,15 @@ class OnboardingScreen extends ConsumerWidget {
               const Spacer(),
               FilledButton(
                 onPressed: () async {
-                  await ref.read(progressProvider.notifier).completeOnboarding();
+                  await ref
+                      .read(progressProvider.notifier)
+                      .completeOnboarding();
                   if (!context.mounted) return;
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(builder: (_) => const HomeScreen()),
                   );
                 },
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: const Color(0xFF4FC3F7),
-                  foregroundColor: Colors.black87,
-                ),
-                child: const Text('Play', style: TextStyle(fontSize: 18)),
+                child: const Text('Play'),
               ),
             ],
           ),

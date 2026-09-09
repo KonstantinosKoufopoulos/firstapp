@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../game/dodge_rush_game.dart';
+import '../theme/dodge_rush_theme.dart';
 import 'fail_screen.dart';
 
 class GameScreen extends ConsumerStatefulWidget {
@@ -54,15 +55,27 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         children: [
           GameWidget(game: _game),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                'Score: $_displayScore',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  shadows: [Shadow(blurRadius: 4, color: Colors.black54)],
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 9,
+                  ),
+                  decoration: BoxDecoration(
+                    color: DodgeRushColors.surface.withValues(alpha: 0.72),
+                    borderRadius: BorderRadius.circular(DodgeRushTokens.radius),
+                  ),
+                  child: Text(
+                    '$_displayScore',
+                    style: const TextStyle(
+                      color: DodgeRushColors.text,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -70,11 +83,16 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           const Positioned(
             left: 0,
             right: 0,
-            bottom: 24,
+            bottom: 20,
             child: Text(
               'TAP TO JUMP',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white54, fontSize: 12),
+              style: TextStyle(
+                color: DodgeRushColors.muted,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+              ),
             ),
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/dodge_rush_theme.dart';
 import 'components/ground.dart';
 import 'components/obstacle.dart';
 import 'components/player.dart';
@@ -25,7 +26,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   int get score => (_elapsed * 10).floor();
 
   @override
-  Color backgroundColor() => const Color(0xFF1A237E);
+  Color backgroundColor() => DodgeRushColors.background;
 
   @override
   Future<void> onLoad() async {
@@ -57,12 +58,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
       // Mostly ground obstacles; occasional floating ones require timing.
       final flying = _rng.nextDouble() < 0.25;
       final y = flying ? groundY - 70 : groundY;
-      add(
-        Obstacle(
-          position: Vector2(size.x + 40, y),
-          speed: _speed,
-        ),
-      );
+      add(Obstacle(position: Vector2(size.x + 40, y), speed: _speed));
     }
   }
 
@@ -74,7 +70,9 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   }
 
   void reset() {
-    children.whereType<Obstacle>().toList().forEach((o) => o.removeFromParent());
+    children.whereType<Obstacle>().toList().forEach(
+      (o) => o.removeFromParent(),
+    );
     _elapsed = 0;
     _spawnTimer = 0;
     _spawnInterval = 1.4;

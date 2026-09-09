@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'providers/providers.dart';
 import 'screens/home_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'theme/dodge_rush_theme.dart';
 
 class DodgeRushApp extends ConsumerWidget {
   const DodgeRushApp({super.key});
@@ -14,13 +15,7 @@ class DodgeRushApp extends ConsumerWidget {
     return MaterialApp(
       title: 'DodgeRush',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4FC3F7),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
+      theme: DodgeRushTheme.dark,
       home: progress.onboardingComplete
           ? const HomeScreen()
           : const OnboardingScreen(),
