@@ -86,7 +86,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
         break;
       case 1: // B double gap 90px
         add(Obstacle(position: Vector2(x, groundY), speed: _speed));
-        add(Obstacle(position: Vector2(x + 90, groundY), speed: _speed));
+        add(Obstacle(position: Vector2(x + 160, groundY), speed: _speed));
         break;
       case 3: // D pause — no obstacles
         break;
