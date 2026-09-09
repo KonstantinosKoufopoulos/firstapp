@@ -15,7 +15,7 @@ class Player extends PositionComponent
   static const double jumpDuration = 0.18; // easeOutCubic rise ~180ms
   static const double coyoteTime = 0.08; // 80ms
   static const double apexHang = 0.04; // 40ms at apex
-  static const double jumpLunge = 36; // forward X during rise+hang
+  static const double jumpLunge = 48; // forward X during rise+hang
   static const double landSquashDuration = 0.10; // 100ms
   static const double landSquashScale = 0.85;
 
