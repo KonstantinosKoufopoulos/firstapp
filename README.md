@@ -103,3 +103,11 @@ flutter run
 ```
 
 Do not commit `build/` or huge caches; `.dart_tool/` is gitignored by Flutter defaults.
+
+## Web preview (GitHub Pages)
+
+After each push to `main`, CI builds web and deploys to the `gh-pages` branch.
+
+- Local: `flutter run -d chrome`
+- Release build: `flutter build web --release --base-href /firstapp/`
+- Live URL (once Pages is enabled on `gh-pages`): https://konstantinoskoufopoulos.github.io/firstapp/
