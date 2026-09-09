@@ -22,7 +22,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   late Player player;
   double _spawnTimer = 0;
   double _spawnInterval = 1.2;
-  double _speed = 160;
+  double _speed = 140;
   double _elapsed = 0;
   bool _alive = true;
   bool _hitStopping = false;
@@ -53,7 +53,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   }
 
   double _tierSpeed() {
-    if (_elapsed < 15) return 160;
+    if (_elapsed < 15) return 140;
     if (_elapsed < 30) return 280;
     return 340;
   }
@@ -61,7 +61,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   double _gapAfterPattern(int pattern) {
     switch (pattern) {
       case 0:
-        return 1.4 + _rng.nextDouble() * 0.2; // A 1.4–1.6s
+        return 1.6 + _rng.nextDouble() * 0.2; // A 1.6–1.8s
       case 1:
         return 1.25; // B
       case 2:
@@ -75,7 +75,9 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   void _spawnPattern() {
     final groundY = size.y - 80;
     final x = size.x + 40;
-    final pattern = _patternIndex % 4;
+    // Cycle A / B / D only — C removed until singles are reliable.
+    const cycle = [0, 1, 3];
+    final pattern = cycle[_patternIndex % cycle.length];
     _speed = _tierSpeed();
 
     switch (pattern) {
@@ -85,10 +87,6 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
       case 1: // B double gap 90px
         add(Obstacle(position: Vector2(x, groundY), speed: _speed));
         add(Obstacle(position: Vector2(x + 90, groundY), speed: _speed));
-        break;
-      case 2: // C low + high
-        add(Obstacle(position: Vector2(x, groundY), speed: _speed));
-        add(Obstacle(position: Vector2(x, groundY - 128), speed: _speed));
         break;
       case 3: // D pause — no obstacles
         break;
@@ -160,7 +158,7 @@ class DodgeRushGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     _elapsed = 0;
     _spawnTimer = 0;
     _spawnInterval = 1.2;
-    _speed = 160;
+    _speed = 140;
     _patternIndex = 0;
     _nearMissCoins = 0;
     _nearMissFlash = 0;

@@ -11,7 +11,7 @@ class Player extends PositionComponent
   Player() : super(size: Vector2(40, 40), anchor: Anchor.bottomCenter);
 
   static const double gravity = 1500;
-  static const double jumpHeight = 136;
+  static const double jumpHeight = 150;
   static const double jumpDuration = 0.18; // easeOutCubic rise ~180ms
   static const double coyoteTime = 0.08; // 80ms
   static const double apexHang = 0.04; // 40ms at apex
