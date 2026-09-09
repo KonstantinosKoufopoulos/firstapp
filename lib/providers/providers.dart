@@ -39,8 +39,12 @@ class ProgressNotifier extends Notifier<PlayerProgress> {
     await _persist(state.copyWith(onboardingComplete: true));
   }
 
-  Future<void> recordRun({required int score, bool usedExtraLife = false}) async {
-    final coins = Economy.coinsForScore(score);
+  Future<void> recordRun({
+    required int score,
+    bool usedExtraLife = false,
+    int bonusCoins = 0,
+  }) async {
+    final coins = Economy.coinsForScore(score) + bonusCoins;
     final high = score > state.highScore ? score : state.highScore;
     final fails = state.failCount + 1;
     await _persist(

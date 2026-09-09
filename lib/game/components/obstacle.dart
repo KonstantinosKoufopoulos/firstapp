@@ -14,7 +14,9 @@ class Obstacle extends PositionComponent
         anchor: Anchor.bottomCenter,
       );
 
-  final double speed;
+  double speed;
+  bool nearMissClaimed = false;
+  bool hitPlayer = false;
 
   @override
   Future<void> onLoad() async {

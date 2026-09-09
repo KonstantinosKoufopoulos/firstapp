@@ -21,25 +21,40 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   Timer? _hudTimer;
   int _displayScore = 0;
   bool _navigating = false;
+  bool _nearMissFlash = false;
 
   @override
   void initState() {
     super.initState();
-    _game = DodgeRushGame(onGameOver: _handleGameOver);
-    _hudTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+    _game = DodgeRushGame(
+      onGameOver: _handleGameOver,
+      onNearMiss: _handleNearMiss,
+    );
+    _hudTimer = Timer.periodic(const Duration(milliseconds: 50), (_) {
       if (!mounted) return;
       final s = _game.score;
-      if (s != _displayScore) {
-        setState(() => _displayScore = s);
+      final flash = _game.nearMissFlashing;
+      if (s != _displayScore || flash != _nearMissFlash) {
+        setState(() {
+          _displayScore = s;
+          _nearMissFlash = flash;
+        });
       }
     });
   }
 
-  void _handleGameOver(int score) {
+  void _handleNearMiss() {
+    if (!mounted) return;
+    setState(() => _nearMissFlash = true);
+  }
+
+  void _handleGameOver(int score, {required int nearMissCoins}) {
     if (_navigating || !mounted) return;
     _navigating = true;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => FailScreen(score: score)),
+      MaterialPageRoute(
+        builder: (_) => FailScreen(score: score, nearMissCoins: nearMissCoins),
+      ),
     );
   }
 
@@ -55,6 +70,14 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       body: Stack(
         children: [
           GameWidget(game: _game),
+          if (_nearMissFlash)
+            IgnorePointer(
+              child: AnimatedOpacity(
+                opacity: _nearMissFlash ? 0.35 : 0,
+                duration: const Duration(milliseconds: 40),
+                child: Container(color: DodgeRushColors.accent),
+              ),
+            ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
@@ -82,7 +105,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     ),
                   ),
                   const Spacer(),
-                  const SizedBox(width: 32), // balance icon
+                  const SizedBox(width: 32),
                 ],
               ),
             ),

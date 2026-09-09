@@ -9,9 +9,10 @@ import 'game_screen.dart';
 import 'home_screen.dart';
 
 class FailScreen extends ConsumerStatefulWidget {
-  const FailScreen({super.key, required this.score});
+  const FailScreen({super.key, required this.score, this.nearMissCoins = 0});
 
   final int score;
+  final int nearMissCoins;
 
   @override
   ConsumerState<FailScreen> createState() => _FailScreenState();
@@ -24,14 +25,12 @@ class _FailScreenState extends ConsumerState<FailScreen>
   bool _extraLifeUsed = false;
   bool _showFlash = true;
   bool _showPanel = false;
-  late final int _prevHighScore;
   late final AnimationController _slideController;
   late final Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-    _prevHighScore = ref.read(progressProvider).highScore;
     _slideController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 320),
@@ -64,15 +63,24 @@ class _FailScreenState extends ConsumerState<FailScreen>
   Future<void> _record() async {
     if (_recorded) return;
     _recorded = true;
-    await ref.read(progressProvider.notifier).recordRun(score: widget.score);
+    await ref.read(progressProvider.notifier).recordRun(
+      score: widget.score,
+      bonusCoins: widget.nearMissCoins,
+    );
   }
 
-  bool get _almost {
-    if (_prevHighScore <= 0) return widget.score > 0;
-    return widget.score >= (_prevHighScore * 0.8);
-  }
+  static const _failCopy = [
+    'Almost!',
+    'So close!',
+    'One more',
+    'Nice try',
+  ];
 
-  String get _retryCopy => _almost ? 'Almost!' : 'Tap to retry';
+  String get _retryCopy {
+    // Rotate by fail count so consecutive deaths feel different.
+    final fails = ref.read(progressProvider).failCount;
+    return _failCopy[fails % _failCopy.length];
+  }
 
   @override
   void dispose() {
@@ -83,7 +91,7 @@ class _FailScreenState extends ConsumerState<FailScreen>
   @override
   Widget build(BuildContext context) {
     final progress = ref.watch(progressProvider);
-    final earned = Economy.coinsForScore(widget.score);
+    final earned = Economy.coinsForScore(widget.score) + widget.nearMissCoins;
     final isHigh = widget.score >= progress.highScore && widget.score > 0;
 
     return Scaffold(
