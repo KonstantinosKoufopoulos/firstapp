@@ -1,0 +1,40 @@
+import 'package:flame/collisions.dart';
+import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
+
+import '../dodge_rush_game.dart';
+
+class Obstacle extends PositionComponent
+    with HasGameReference<DodgeRushGame>, CollisionCallbacks {
+  Obstacle({required Vector2 position, required this.speed})
+      : super(
+          position: position,
+          size: Vector2(36, 56),
+          anchor: Anchor.bottomCenter,
+        );
+
+  final double speed;
+
+  @override
+  Future<void> onLoad() async {
+    add(RectangleHitbox());
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    position.x -= speed * dt;
+    if (position.x < -size.x) {
+      removeFromParent();
+    }
+  }
+
+  @override
+  void render(Canvas canvas) {
+    final paint = Paint()..color = const Color(0xFFE57373);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(size.toRect(), const Radius.circular(4)),
+      paint,
+    );
+  }
+}
