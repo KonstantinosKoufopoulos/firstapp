@@ -15,12 +15,14 @@ class Player extends PositionComponent
   static const double jumpDuration = 0.18; // easeOutCubic rise ~180ms
   static const double coyoteTime = 0.08; // 80ms
   static const double apexHang = 0.04; // 40ms at apex
+  static const double jumpLunge = 36; // forward X during rise+hang
   static const double landSquashDuration = 0.10; // 100ms
   static const double landSquashScale = 0.85;
 
   double velocityY = 0;
   bool onGround = true;
   late double groundY;
+  late double homeX;
 
   double _coyoteTimer = 0;
   bool _rising = false;
@@ -34,7 +36,8 @@ class Player extends PositionComponent
   @override
   Future<void> onLoad() async {
     groundY = game.size.y - 80;
-    position = Vector2(game.size.x * 0.25, groundY);
+    homeX = game.size.x * 0.25;
+    position = Vector2(homeX, groundY);
     add(CircleHitbox(radius: 16));
   }
 
@@ -64,7 +67,8 @@ class Player extends PositionComponent
     _scaleX = 1;
     _scaleY = 1;
     groundY = game.size.y - 80;
-    position = Vector2(game.size.x * 0.25, groundY);
+    homeX = game.size.x * 0.25;
+    position = Vector2(homeX, groundY);
   }
 
   @override
@@ -73,6 +77,7 @@ class Player extends PositionComponent
 
     if (onGround) {
       _coyoteTimer = coyoteTime;
+      position.x = homeX;
     } else if (_coyoteTimer > 0) {
       _coyoteTimer -= dt;
     }
@@ -82,6 +87,7 @@ class Player extends PositionComponent
       final t = (_jumpT / jumpDuration).clamp(0.0, 1.0);
       final h = Curves.easeOutCubic.transform(t);
       position.y = groundY - jumpHeight * h;
+      position.x = homeX + jumpLunge * h;
       // Settle stretch toward neutral during rise.
       _scaleX = 0.88 + 0.12 * t;
       _scaleY = 1.18 - 0.18 * t;
@@ -90,6 +96,7 @@ class Player extends PositionComponent
         _hanging = true;
         _hangTimer = apexHang;
         position.y = groundY - jumpHeight;
+        position.x = homeX + jumpLunge;
         velocityY = 0;
       }
       return;
@@ -98,6 +105,7 @@ class Player extends PositionComponent
     if (_hanging) {
       _hangTimer -= dt;
       position.y = groundY - jumpHeight;
+      position.x = homeX + jumpLunge;
       velocityY = 0;
       if (_hangTimer <= 0) {
         _hanging = false;
@@ -108,6 +116,11 @@ class Player extends PositionComponent
     if (!onGround) {
       velocityY += gravity * dt;
       position.y += velocityY * dt;
+      // Return X to home during descent (ease by fall progress).
+      final apexY = groundY - jumpHeight;
+      final fallT = ((position.y - apexY) / jumpHeight).clamp(0.0, 1.0);
+      final back = Curves.easeOutCubic.transform(fallT);
+      position.x = homeX + jumpLunge * (1 - back);
       if (position.y >= groundY) {
         _land();
       }
@@ -123,6 +136,7 @@ class Player extends PositionComponent
 
   void _land() {
     position.y = groundY;
+    position.x = homeX;
     velocityY = 0;
     onGround = true;
     _coyoteTimer = coyoteTime;
