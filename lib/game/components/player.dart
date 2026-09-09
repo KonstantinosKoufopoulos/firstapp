@@ -12,10 +12,11 @@ class Player extends PositionComponent
     with CollisionCallbacks, HasGameReference<DodgeRushGame> {
   Player() : super(size: Vector2(40, 40), anchor: Anchor.bottomCenter);
 
-  static const double gravity = 2200;
+  static const double gravity = 1500;
   static const double jumpHeight = 136;
-  static const double jumpDuration = 0.16; // easeOutCubic rise ~160ms
+  static const double jumpDuration = 0.18; // easeOutCubic rise ~180ms
   static const double coyoteTime = 0.08; // 80ms
+  static const double apexHang = 0.04; // 40ms at apex
   static const double landSquashDuration = 0.10; // 100ms
   static const double landSquashScale = 0.85;
 
@@ -25,6 +26,8 @@ class Player extends PositionComponent
 
   double _coyoteTimer = 0;
   bool _rising = false;
+  bool _hanging = false;
+  double _hangTimer = 0;
   double _jumpT = 0;
   double _squashT = 1; // 0 = just landed (0.85), 1 = settled (1.0)
   double _scaleX = 1;
@@ -42,9 +45,11 @@ class Player extends PositionComponent
     onGround = false;
     _coyoteTimer = 0;
     _rising = true;
+    _hanging = false;
+    _hangTimer = 0;
     _jumpT = 0;
     velocityY = 0;
-    // Stretch pop while rising (easeOutBack drives Y).
+    // Stretch pop while rising (easeOutCubic drives Y).
     _scaleX = 0.88;
     _scaleY = 1.18;
   }
@@ -54,6 +59,8 @@ class Player extends PositionComponent
     onGround = true;
     _coyoteTimer = coyoteTime;
     _rising = false;
+    _hanging = false;
+    _hangTimer = 0;
     _jumpT = 0;
     _squashT = 1;
     _scaleX = 1;
@@ -82,9 +89,20 @@ class Player extends PositionComponent
       _scaleY = 1.18 - 0.18 * t;
       if (t >= 1.0) {
         _rising = false;
-        // End of rise, then fall.
-        position.y = math.min(position.y, groundY - jumpHeight * 0.98);
+        _hanging = true;
+        _hangTimer = apexHang;
+        position.y = groundY - jumpHeight;
         velocityY = 0;
+      }
+      return;
+    }
+
+    if (_hanging) {
+      _hangTimer -= dt;
+      position.y = groundY - jumpHeight;
+      velocityY = 0;
+      if (_hangTimer <= 0) {
+        _hanging = false;
       }
       return;
     }
